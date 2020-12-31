@@ -7,7 +7,7 @@
 [ ! $(which jq) ] && echo "Please install jq!" && exit 1
 
 # If notify-send is not installed, use echo as notifier
-[ ! $(which notify-send) ] && notifier="echo" || notifier="notify-send"
+[ ! $(which notify-send) ] && notifier="echo" || notifier="notify-send -u normal -t 10 redyt"
 
 # Check is sxiv is installed
 [ ! $(which sxiv) ] && echo "Please install sxiv!" && exit 1
@@ -19,6 +19,20 @@
 # If subbreddit.txt does not exist, create it to prevent
 # the program from not functioning properly
 [ ! -f "$HOME/.config/redyt/subreddit.txt" ] && echo "linux" >> "$HOME/.config/redyt/subreddit.txt"
+
+cachedir="$HOME/.cache/redyt"
+permastoredir="$HOME/Imagens/redyt/$subreddit"
+
+# If cachedir does not exist, create it
+if [ ! -d "$cachedir" ]; then
+	echo "$cachedir does not exist, creating..."
+	mkdir -p "$cachedir"
+fi
+
+if [ "$(ls -A $cachedir)" ]; then
+    echo "There is another instance running, close it and try again!"
+    exit
+fi
 
 # If no argument is passed
 if [ -z "$1" ]; then
@@ -33,22 +47,13 @@ if [ -z "$1" ]; then
 # Otherwise assign the first argument to the
 # subreddit variable
 else
-	subreddit="$1"
-fi
-
-cachedir="$HOME/.cache/redyt"
-permastoredir="$HOME/Imagens/redyt/$subreddit"
-
-# If cachedir does not exist, create it
-if [ ! -d "$cachedir" ]; then
-	echo "$cachedir does not exist, creating..."
-	mkdir -p "$cachedir"
+    subreddit="$1"
 fi
 
 limit=100
 
 # Send a notification
-$notifier "Redyt: 📩 Downloading your 🖼️ Memes"
+$notifier "Redyt: 📩 Downloading your 🖼️ Memes from r/$subreddit"
 
 # Download the subreddit feed, containing only the
 # first 100 entries (limit), and store it inside
@@ -65,14 +70,14 @@ imgs=$(cat "$cachedir/tmp.json" | jq '.' | grep url_overridden_by_dest | grep -E
 wget -P "$cachedir" $imgs
 
 # Send a notification
-$notifier  "Redyt: 👍 Download Finished, Enjoy! 😊"
+$notifier  "Redyt: 👍 Download from r/$subreddit Finished, Enjoy! 😊"
 
 #remove the temporary json file
 rm "$cachedir/tmp.json" 
 
 # Display the images
 #sxiv -a "$cachedir/*.png" "$cachedir/*.jpg"
-sxiv "$cachedir"/*.*
+sxiv -a "$cachedir"/*.*
 
 #Ask to copy to copy to image folders
 
