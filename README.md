@@ -23,4 +23,10 @@ Please note: you will need to install the following programs:
 
 `notify-send` is also recommended but, if not present, `echo` will be used as a notifier.
 
+# Additional Info about the fork
 My fork allows you to permanently store the images in a permanent storage directory
+
+# Troubleshooting
+
+Symptom: the script says that there is another instance running, but there is not
+Fix: Clear the cache folder using "rm ~/.cache/redyt/*" (without the quotes)
