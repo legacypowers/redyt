@@ -37,6 +37,7 @@ else
 fi
 
 cachedir="$HOME/.cache/redyt"
+permastoredir="$HOME/Imagens/redyt/$subreddit"
 
 # If cachedir does not exist, create it
 if [ ! -d "$cachedir" ]; then
@@ -66,8 +67,20 @@ wget -P "$cachedir" $imgs
 # Send a notification
 $notifier  "Redyt: 👍 Download Finished, Enjoy! 😊"
 
-# Display the images
-sxiv -a "$cachedir/*.png" "$cachedir/*.jpg"
+#remove the temporary json file
+rm "$cachedir/tmp.json" 
 
-# Once finished, remove all of the cached images
+# Display the images
+#sxiv -a "$cachedir/*.png" "$cachedir/*.jpg"
+sxiv "$cachedir"/*.*
+
+#Ask to copy to copy to image folders
+
+read -p "Store these images permanently?[y/n](default no)" pstore
+case $pstore in
+    [Yy]* ) [ ! -d "$permastoredir" ] && echo "Directory $permastoredir does not exist, creating..." && mkdir -p "$permastoredir"; cp "$cachedir"/* "$permastoredir"  ;;
+    * ) echo "Not saving then...";;
+esac
+
+
 rm "$cachedir"/*
