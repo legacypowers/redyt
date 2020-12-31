@@ -22,3 +22,5 @@ Please note: you will need to install the following programs:
   - sxiv (Image Previewing)
 
 `notify-send` is also recommended but, if not present, `echo` will be used as a notifier.
+
+My fork allows you to permanently store the images in a permanent storage directory
